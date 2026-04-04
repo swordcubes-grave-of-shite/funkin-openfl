@@ -24,6 +24,7 @@ package openfl.display._internal;
 	var LINE_TO;
 	var MOVE_TO;
 	var OVERRIDE_BLEND_MODE;
+	var OVERRIDE_DEPTH_TEST;
 	var OVERRIDE_MATRIX;
 	var WINDING_EVEN_ODD;
 	var WINDING_NON_ZERO;

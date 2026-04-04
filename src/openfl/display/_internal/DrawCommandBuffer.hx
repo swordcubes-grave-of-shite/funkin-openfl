@@ -10,6 +10,7 @@ import openfl.display.JointStyle;
 import openfl.display.LineScaleMode;
 import openfl.display.SpreadMethod;
 import openfl.display.TriangleCulling;
+import openfl.display3D.Context3DCompareMode;
 import openfl.geom.Matrix;
 import openfl.Vector;
 
@@ -140,6 +141,9 @@ class DrawCommandBuffer
 				case WINDING_NON_ZERO:
 					var c = data.readWindingNonZero();
 					windingNonZero();
+				case OVERRIDE_DEPTH_TEST:
+					var c = data.readOverrideDepthTest();
+					overrideDepthTest(c.depthTest, c.compareMode);
 				default:
 			}
 		}
@@ -449,6 +453,15 @@ class DrawCommandBuffer
 		prepareWrite();
 
 		types.push(WINDING_NON_ZERO);
+	}
+
+	public inline function overrideDepthTest(depthTest:Bool, compareMode:Context3DCompareMode):Void
+	{
+		prepareWrite();
+
+		types.push(OVERRIDE_DEPTH_TEST);
+		b.push(depthTest);
+		o.push(compareMode);
 	}
 
 	// Get & Set Methods
