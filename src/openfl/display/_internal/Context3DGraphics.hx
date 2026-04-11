@@ -1117,7 +1117,7 @@ class Context3DGraphics
 							renderer.__setBlendMode(c.blendMode);
 
 						case OVERRIDE_DEPTH_TEST:
-							var c = tempReader.readOverrideDepthTest();
+							var c = data.readOverrideDepthTest();
 							context.__setGLDepthTest(c.depthTest);
 							context.setDepthTest(c.depthTest, c.compareMode);
 
