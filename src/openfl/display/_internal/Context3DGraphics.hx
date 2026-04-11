@@ -606,7 +606,7 @@ class Context3DGraphics
 
 				case OVERRIDE_BLEND_MODE:
 				    data.skip(type);
-					
+
 				case OVERRIDE_DEPTH_TEST:
 					data.skip(type);
 
@@ -1115,6 +1115,11 @@ class Context3DGraphics
 						case OVERRIDE_BLEND_MODE:
 							var c = data.readOverrideBlendMode();
 							renderer.__setBlendMode(c.blendMode);
+
+						case OVERRIDE_DEPTH_TEST:
+							var c = tempReader.readOverrideDepthTest();
+							context.__setGLDepthTest(c.depthTest);
+							context.setDepthTest(c.depthTest, c.compareMode);
 
 						default:
 							data.skip(type);
