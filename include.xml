@@ -8,8 +8,8 @@
 	<set name="expect-lime-version" value="${lime-version}" if="lime-version" />
 	<!-- <set name="lime-version" value="${expect-lime-version}" if="setup" unless="lime-version" /> -->
 
-	<haxedef name="native" if="cpp || neko" />
-	<set name="native" if="cpp || neko" />
+	<haxedef name="native" if="cpp || hl" />
+	<set name="native" if="cpp || hl" />
 
 	<window stencil-buffer="true" depth-buffer="true" color-depth="32" />
 
@@ -35,17 +35,11 @@
 
 	</section>
 
-	<section if="${haxe_ver >= 4.3} ${lime < 8.0.2} flash" unless="setup || create || disable-version-check || display">
+	<define name="openfl-funkin" />
 
-		<!-- Haxe 4.3 made Flash externs more strict -->
-		<log error="Lime version ${lime} is not compatible with OpenFL ${openfl} when targeting flash or air with Haxe 4.3+ (expected Lime version 8.0.2+)" />
+	<section unless="lime-funkin || setup || create || disable-version-check || display">
 
-	</section>
-
-	<section if="${lime < 7.6.0} || ${lime >= 8.4.0}" unless="setup || create || disable-version-check || display">
-
-		<log warn="Lime version ${lime} may not be compatible with OpenFL ${openfl} (expected version ${expect-lime-version})" />
-		<log info='Use &lt;lime version="" /&gt; before &lt;haxelib name="openfl" /&gt; to include a specific version' />
+		<log error="Lime has to be FunkinCrew's Fork to be compiling with OpenFL FunkinCrew's Fork, (got Lime ${lime})"/>
 
 	</section>
 
@@ -99,43 +93,10 @@
 			<haxedef name="openfl-html5" />
 			<haxeflag name="--remap" value="flash:openfl" />
 
-			<module name="openfl" if="html5 lime-modular">
-
-				<source path="src" package="openfl" exclude="openfl._internal.renderer.console.*|*.Context3DGraphics|*.SWFLibrary" />
-
-				<!-- @:expose on enums do not work in Haxe 3.4.2 -->
-				<class remove="lime.graphics.opengl.GLContextType" />
-				<class remove="lime.graphics.ImageChannel" />
-				<class remove="lime.graphics.ImageType" />
-				<class remove="lime.graphics.RendererType" />
-				<class remove="lime.ui.FileDialogType" />
-				<class remove="lime.ui.MouseCursor" />
-				<class remove="lime.system.Endian" />
-				<class remove="lime.system.SensorType" />
-
-				<include type="openfl.display3D._Program3D.Uniform" />
-				<include type="openfl.display3D._Program3D.UniformMap" />
-				<include type="openfl.display.DefaultPreloader" />
-				<include type="openfl.events._EventDispatcher.Listener" />
-				<include type="openfl.utils.ByteArrayData" />
-				<include type="openfl._Vector.IVector" />
-				<include type="openfl._Vector.BoolVector" />
-				<include type="openfl._Vector.FloatVector" />
-				<include type="openfl._Vector.FunctionVector" />
-				<include type="openfl._Vector.IntVector" />
-				<include type="openfl._Vector.ObjectVector" />
-				<include type="openfl._internal.renderer.console.ConsoleRenderer" />
-				<include type="openfl._internal.stage3D._AGALConverter.DestRegister" />
-				<include type="openfl._internal.stage3D.RegisterMap" />
-				<include type="openfl._internal.stage3D._AGALConverter.RegisterMapEntry" />
-				<include type="openfl._internal.stage3D._AGALConverter.SamplerRegister" />
-				<include type="openfl._internal.stage3D._AGALConverter.SourceRegister" />
-
-			</module>
-
 		</section>
 
-		<set name="openfl-has-default-fonts" if="windows || mac || linux || ios || android || flash || html5 || emscripten || tvos" />
+		<set name="openfl-has-default-fonts" if="windows || mac || linux || ios || android || flash || html5 || tvos" />
+
 		<assets path="assets/fonts" unless="openfl-has-default-fonts || openfl-no-default-fonts" />
 
 	</section>

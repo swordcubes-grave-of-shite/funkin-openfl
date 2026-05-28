@@ -1694,8 +1694,6 @@ class Stage extends DisplayObjectContainer #if lime implements IModule #end
 
 			#if (cpp && !cppia)
 			untyped __cpp__("throw e");
-			#elseif neko
-			neko.Lib.rethrow(e);
 			#elseif js
 			try
 			{
@@ -2061,7 +2059,6 @@ class Stage extends DisplayObjectContainer #if lime implements IModule #end
 		window.onClose.add(__onLimeWindowClose.bind(window), false, -9000);
 		window.onDeactivate.add(__onLimeWindowDeactivate.bind(window));
 		window.onEnter.add(__onLimeWindowEnter.bind(window));
-		window.onExpose.add(__onLimeWindowExpose.bind(window));
 		window.onFocusIn.add(__onLimeWindowFocusIn.bind(window));
 		window.onFocusOut.add(__onLimeWindowFocusOut.bind(window));
 		window.onFullscreen.add(__onLimeWindowFullscreen.bind(window));
@@ -2289,11 +2286,11 @@ class Stage extends DisplayObjectContainer #if lime implements IModule #end
 
 		if (deltaMode == PIXELS)
 		{
-			__onMouseWheel(Std.int(deltaX * window.scale), Std.int(deltaY * window.scale), deltaMode);
+			__onMouseWheel(deltaX * window.scale, deltaY * window.scale, deltaMode);
 		}
 		else
 		{
-			__onMouseWheel(Std.int(deltaX), Std.int(deltaY), deltaMode);
+			__onMouseWheel(deltaX, deltaY, deltaMode);
 		}
 	}
 
@@ -2322,12 +2319,12 @@ class Stage extends DisplayObjectContainer #if lime implements IModule #end
 
 	@:noCompletion private function __renderAfterEvent():Void
 	{
-		#if (cpp || hl || neko)
+		#if (cpp || hl)
 		// TODO: should Lime have a public API to force rendering?
 		window.__backend.render();
 		#end
 		var cancelled = __render(window.context);
-		#if (cpp || hl || neko)
+		#if (cpp || hl)
 		if (!cancelled)
 		{
 			window.__backend.contextFlip();
@@ -2689,13 +2686,6 @@ class Stage extends DisplayObjectContainer #if lime implements IModule #end
 	@:noCompletion private function __onLimeWindowEnter(window:Window):Void
 	{
 		// if (this.window == null || this.window != window) return;
-	}
-
-	@:noCompletion private function __onLimeWindowExpose(window:Window):Void
-	{
-		if (this.window == null || this.window != window) return;
-
-		__renderDirty = true;
 	}
 
 	@:noCompletion private function __onLimeWindowFocusIn(window:Window):Void
@@ -3366,9 +3356,8 @@ class Stage extends DisplayObjectContainer #if lime implements IModule #end
 		var targetPoint = Point.__pool.get();
 		targetPoint.setTo(x, y);
 		__displayMatrix.__transformInversePoint(targetPoint);
-		var delta = Std.int(deltaY);
 
-		var event = MouseEvent.__create(MouseEvent.MOUSE_WHEEL, 0, 0, __mouseX, __mouseY, target.__globalToLocal(targetPoint, targetPoint), target, delta);
+		var event = MouseEvent.__create(MouseEvent.MOUSE_WHEEL, 0, 0, __mouseX, __mouseY, target.__globalToLocal(targetPoint, targetPoint), target, deltaX, deltaY);
 		event.cancelable = true;
 		__dispatchStack(event, stack);
 		if (event.isDefaultPrevented()) window.onMouseWheel.cancel();
